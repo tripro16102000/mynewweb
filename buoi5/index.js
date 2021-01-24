@@ -14,7 +14,7 @@ import './component/list-post.js'
 
 import './component/post-item.js'
 
-redirect('register')
+
 export function redirect(screenName){
 if (screenName === 'login'){
     document.querySelector('#app').innerHTML = `
@@ -31,22 +31,22 @@ if (screenName === 'login'){
 }
 }
 
-// firebase.auth().onAuthStateChanged((user)=>{
-//     if(user){
-//         if(!user.emailVerified){
-//             alert('Please verify email')
-//             redirect('login')
-//             return
-//         }else{
-//              window.currentUser = {
-//                 id: user.uid,
-//                 email: user.email,
-//                 displayName: user.displayName
-//             }
-//             redirect('story')
+firebase.auth().onAuthStateChanged((user)=>{
+    if(user){
+        if(!user.emailVerified){
+            alert('Please verify email')
+            redirect('login')
+            return
+        }else{
+             window.currentUser = {
+                id: user.uid,
+                email: user.email,
+                displayName: user.displayName
+            }
+            redirect('story')
             
-//         }
-//     }else{
-// // redirect('login')
-//     }
-// })
+        }
+    }else{
+redirect('login')
+    }
+})

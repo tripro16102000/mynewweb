@@ -1,3 +1,5 @@
+import {uploadFile} from "../utility.js";
+ 
 class CreatePost extends HTMLElement {
   constructor() {
     super();
@@ -5,11 +7,14 @@ class CreatePost extends HTMLElement {
     this._shadowDom.innerHTML = `
        <div class ="create-post">
     <textarea id="content"></textarea>
+    <input id="file" type="file">
     <button id="btn">post</button>
        </div>
 
        <style>
        textarea#content {
+         margin-top: 10px;
+         margin-left: 270px;
            width: 600px;
            height: 120px;
            border: 3px solid #cccccc
@@ -23,16 +28,25 @@ class CreatePost extends HTMLElement {
 
        </style>
         `;
-    this._shadowDom.getElementById("btn").addEventListener("click", (e) => {
+    this._shadowDom.getElementById("btn").addEventListener("click", async (e) => {
+      if(content.trim())
       e.preventDefault();
+      const file = this._shadowDom.getElementById("file")
+      let fileurl = ''
+      if(file.files.length > 0){
+        fileurl = await uploadFile(file.files[0])
+        console.log(fileurl)
+      }
       const dataToAdd = {
         authorName: currentUser.displayName,
         createdAt: new Date().toISOString(),
         createdBy: currentUser.id,
         content: this._shadowDom.getElementById("content").value,
+        image: fileurl
       };
       
-      firebase.firestore().collection("post").add(dataToAdd);
+   await   firebase.firestore().collection("post").add(dataToAdd);
+   this._shadowDom.getElementById("content").value = ""
     });
   }
 }
